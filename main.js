@@ -1,92 +1,5 @@
 import * as THREE from "three"
 
-/* CUBE EN ROTATION
-
-const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
-
-const renderer = new THREE.WebGLRenderer()
-renderer.setSize( window.innerWidth, window.innerHeight )
-document.body.appendChild( renderer.domElement )
-
-const geometry = new THREE.BoxGeometry( 1, 1, 1 )
-const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } )
-const cube = new THREE.Mesh( geometry, material )
-scene.add( cube )
-
-camera.position.z = 5
-
-function animate() {
-    requestAnimationFrame( animate )
-    cube.rotation.x += 0.005
-    cube.rotation.y += 0.005
-    renderer.render( scene, camera )
-}
-
-animate()
-
-*/
-
-/* 2 LIGNES FORMANT UNE FLECHE 
-
-const renderer = new THREE.WebGLRenderer()
-renderer.setSize( window.innerWidth, window.innerHeight )
-document.body.appendChild( renderer.domElement )
-
-const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 )
-camera.position.set( 0, 0, 100)
-camera.lookAt( 0, 0, 0 )
-
-const scene = new THREE.Scene()
-
-const material =  new THREE.LineBasicMaterial( { color: 0x000ff } )
-
-const points = []
-points.push( new THREE.Vector3( -10, 0, 0) )
-points.push( new THREE.Vector3 ( 0, 10, 0 ) )
-points.push( new THREE.Vector3 ( 10, 0, 0 ) )
-
-const geometry = new THREE.BufferGeometry().setFromPoints( points )
-
-const line = new THREE.Line( geometry, material )
-
-scene.add( line )
-renderer.render( scene, camera )
-
-*/
-
-
-/* TESTS DIVERS
-
-const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
-
-const renderer = new THREE.WebGLRenderer()
-renderer.setSize( window.innerWidth, window.innerHeight )
-document.body.appendChild( renderer.domElement )
-
-const geometry = new THREE.BoxGeometry( 1, 1, 1 )
-const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } )
-const cube = new THREE.Mesh( geometry, material )
-
-camera.position.z = 5
-
-scene.add( cube )
-
-function animate() {
-
-    requestAnimationFrame( animate )
-
-    cube.rotation.x += 0.002
-    cube.rotation.y += 0.002
-
-    renderer.render( scene, camera )
-}
-
-animate()
-
-*/
-
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000)
 
@@ -95,17 +8,53 @@ renderer.setSize( window.innerWidth, window.innerHeight )
 document.body.appendChild( renderer.domElement )
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 )
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } )
 const cube = new THREE.Mesh( geometry, material )
 
 scene.add(cube)
 
-camera.position.z = 5
+camera.position.z = 3
+
+const raycaster = new THREE.Raycaster()
+const mouse = new THREE.Vector2()
+
+function onClick(event) {
+
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+
+    raycaster.setFromCamera( mouse, camera )
+
+    const intersects = raycaster.intersectObjects(scene.children)
+
+    if (intersects.length > 0  && intersects[0].object === cube) {
+        console.log("randomColor")
+        let red = Math.floor(Math.random() * 256)
+        let green = Math.floor(Math.random() * 256)
+        let blue = Math.floor(Math.random() * 256)
+    
+        const newMaterial =  new THREE.MeshBasicMaterial({ color: `rgb(${red}, ${green}, ${blue})` })
+        cube.material = newMaterial
+    
+        renderer.render( scene, camera )
+    }
+}
+
+function handleKeyboardInput(event) {
+    console.log(event.keyCode)
+    if(event.keyCode == 38) cube.position.y += 0.02
+    if(event.keyCode == 40) cube.position.y -= 0.02
+    if(event.keyCode == 37) cube.position.x -= 0.02
+    if(event.keyCode == 39) cube.position.x += 0.02
+}
+
+window.addEventListener("click", onClick, false)
+window.addEventListener("keydown", handleKeyboardInput, false)
 
 function animate() {
-    requestAnimationFrame(animate)
-    cube.rotation.x += 0.005
-    cube.rotation.y += 0.005
+    requestAnimationFrame( animate )
+    cube.rotation.x += 0.001
+    cube.rotation.y += 0.001
     renderer.render( scene, camera )
 }
 
