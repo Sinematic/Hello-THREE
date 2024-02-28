@@ -1,10 +1,13 @@
-import * as THREE from "./three"
+import * as THREE from "./node_modules/three"
+
+const width = window.innerWidth
+const height = window.innerHeight
 
 const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000)
+const camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000)
 
-const renderer = new THREE.WebGLRenderer()
-renderer.setSize( window.innerWidth, window.innerHeight )
+const renderer = new THREE.WebGLRenderer({ antialias: true })
+renderer.setSize( width, height )
 document.body.appendChild( renderer.domElement )
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 )
@@ -20,8 +23,8 @@ const mouse = new THREE.Vector2()
 
 function onClick(event) {
 
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+    mouse.x = (event.clientX / width) * 2 - 1
+    mouse.y = -(event.clientY / height) * 2 + 1
 
     raycaster.setFromCamera( mouse, camera )
 
